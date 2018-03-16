@@ -83,5 +83,5 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
        ike-policy AWS-IKE1
        sa-policy AWS-SA1
        connection start
-       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
-       ```
+       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> **Pre-Shared Key**
+     ```
