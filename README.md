@@ -4,7 +4,7 @@
 Purpose of this post is to outline the steps involved in migration of an AWS VPC running VGW for VPN termination / connectivit to Arista vEOS Router.
 
 When utilizing the AWS VGW we are employing IPSec and VTI on the Arista vEOS Router running in the Transit VPC router as shown in the image below.  Our goal is to migrate from this image:
-![AWS-VPC-with-VGW](file://AWS-VPC-with-VGW.jpg)
+![AWS-VPC-with-VGW](https://github.com/vipulchib/AWS-VPC-Migrate-from-VGW-to-Arista-vEOS-Router/blob/master/AWS-VPC-with-VGW.jpg)
 
 # What is CloudFormation and creation of templates in YAML
 I have covered this in a little bit of detail here - https://github.com/vipulchib/aws-cloudformation
