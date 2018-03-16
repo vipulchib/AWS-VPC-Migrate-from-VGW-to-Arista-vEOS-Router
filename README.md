@@ -12,8 +12,9 @@ To this setup:
 # What is CloudFormation and creation of templates in YAML
 I have broken down every section of the template and provided my thought process with regards to what I am doing and how in another post - https://github.com/vipulchib/aws-cloudformation
 
-# Migrating the VPC from VGW to Arista vEOS Router
-I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Router.  In this exercise it is assumed that the Transit VPC is already provisioned with an Arista vEOS Router.  I will demonstrate the following in order:
+# Build VPC-1 with AWS VGW for VPN termination
+In this exercise it is assumed that the Transit VPC is already provisioned with an Arista vEOS Router.  I will demonstrate the 
+following in order:
 
 1.  Creation of VPC-1 using the AWS CLI and a CloudFormation stack using the YAML file that comprises of the Parameters and 
      the following Resouces: 
@@ -39,9 +40,9 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
 
 2.  Transit VPC Arista vEOS Router will be configured with the following EOS config, which includes IPSec and BGP
      configuration.  Prior to generating this config you will need to 'Download Configuration' from the 'VPN Connections' 
-     portion of the VPC Dashboard.  Download this file as the 'Generic' vendor and save the following which will enable 
-     constructing the EOS config: Pre-Shared Key, Outside Virtual Private Gateway IP, Inside IP Address of the Customer 
-     Gateway and the Virtual Private Gateway IP.
+     portion of AWS's VPC Dashboard.  Download this file as the 'Generic' vendor and save the following which will enable 
+     constructing the EOS config: **Pre-Shared Key, Outside Virtual Private Gateway IP, Inside IP Address of the Customer 
+     Gateway and the Virtual Private Gateway IP**.
 
      ```
      hostname Arista-Transit
@@ -86,8 +87,7 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
        connection start
        shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
      ```
-3.  In this section we will do a simple connectivity and throughput test between Host-1a in VPC-1 and Host-Transit in the 
-     Transit VPC: 
+3.  We will do a simple connectivity and throughput test between Host-1a in VPC-1 and Host-Transit in the Transit VPC: 
      - Iperf3 Server running on Host-Transit.
      ```
      [ec2-user@ip-10-100-11-10 ~]$ iperf3 -s
@@ -112,3 +112,25 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
      [  4]   2.00-2.79   sec  31.2 MBytes   333 Mbits/sec   18    214 KBytes
      ```
 
+# Migrating the VPC from VGW to Arista vEOS Router
+I will focus on how to migrate an existing VPC-1 with AWS VGW to Arista vEOS Router.
+
+1.  In this exercise we will update the CloudFormation Stack we previously created 'AristaVPCStack' using the AWS CLI and 
+referencing a new  CloudFormation YAML file that comprises of the Parameters and the following Resouces: 
+     - Transit VPC facing Subnets.
+     - Route Tables with the new Subnet Associations.
+     - A VPC Peering connection between the Transit-VPC and VPC-1.
+     - Routing entry for Transit VPC facing subnets in VPC-1's connectivity to the vEOS Router in Transit VPC via previously 
+     created VPC Peering connection.
+     - Routing entries for VPC-1 facing subnet in the Transit VPC's connectivity to the vEOS Router in VPC-1 via previously 
+     created VPC Peering connection.
+     - Remove and clean the following:
+          - The Customer Gateway.
+          - The VPN Gateway and its attachment to the VPC.
+          - Disable Route Propagation from the VPN Gateway to the Subnets in the VPC
+          - Lastly, delete the previously created VPN connection to the Transit VPN Arista vEOS Router.
+     
+     Here is the AWS CLI command referencing the YAML file:
+     ```
+     aws cloudformation create-stack --stack-name AristaVPCStack --template-body file:////Edge1-VPC-updated-with-vEOS-CF.yaml
+     ```
