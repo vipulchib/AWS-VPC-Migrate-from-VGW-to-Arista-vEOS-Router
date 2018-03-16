@@ -124,6 +124,7 @@ referencing a new  CloudFormation YAML file that comprises of the Parameters and
      created VPC Peering connection.
      - Routing entries for VPC-1 facing subnet in the Transit VPC's connectivity to the vEOS Router in VPC-1 via previously 
      created VPC Peering connection.
+     - vEOS Router instances, their respective Interfaces and Elastic IP's for reachability from the Internet.
      - Remove and clean the following:
           - The Customer Gateway.
           - The VPN Gateway and its attachment to the VPC.
@@ -132,5 +133,30 @@ referencing a new  CloudFormation YAML file that comprises of the Parameters and
      
      Here is the AWS CLI command referencing the YAML file:
      ```
-     aws cloudformation create-stack --stack-name AristaVPCStack --template-body file:////Edge1-VPC-updated-with-vEOS-CF.yaml
+     aws cloudformation update-stack --stack-name AristaVPCStack --template-body file://Edge1-VPC-updated-with-vEOS-CF.yaml
+     ```
+3.  We will do a simple connectivity and throughput test between Host-1a in VPC-1 and Host-Transit in the Transit VPC.  This 
+     traffic should now traverse the VPC Peering connection without IPSec and across GRE tunnels: 
+     - Iperf3 Server running on Host-Transit.
+     ```
+     [ec2-user@ip-10-100-11-10 ~]$ iperf3 -s
+     -----------------------------------------------------------
+     Server listening on 5201
+     -----------------------------------------------------------
+     Accepted connection from 10.1.11.10, port 51314
+     [  5] local 10.100.11.10 port 5201 connected to 10.1.11.10 port 51316
+     [ ID] Interval           Transfer     Bandwidth
+     [  5]   0.00-1.00   sec   111 MBytes   935 Mbits/sec
+     [  5]   1.00-2.00   sec   118 MBytes   994 Mbits/sec
+     [  5]   2.00-3.00   sec   118 MBytes   989 Mbits/sec
+     ```  
+     - Iperf3 Client running on Host-1a.
+     ```
+     [ec2-user@ip-10-1-11-10 ~]$ iperf3 -c 10.100.11.10
+     Connecting to host 10.100.11.10, port 5201
+     [  4] local 10.1.11.10 port 51316 connected to 10.100.11.10 port 5201
+     [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+     [  4]   0.00-1.00   sec   119 MBytes   996 Mbits/sec   17    549 KBytes
+     [  4]   1.00-2.00   sec   119 MBytes   995 Mbits/sec   31    819 KBytes
+     [  4]   2.00-3.00   sec   117 MBytes   985 Mbits/sec   24   1019 KBytes
      ```
