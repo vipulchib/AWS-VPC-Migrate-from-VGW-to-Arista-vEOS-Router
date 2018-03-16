@@ -90,6 +90,12 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
      the following Resouces: 
      - VPC.
      
-     |   |   |
-     |---|---|
-     |   |   |
+     | Host-1a  
+     |---
+     | [ec2-user@ip-10-1-11-10 ~]$ iperf3 -c 10.100.11.10
+Connecting to host 10.100.11.10, port 5201
+[  4] local 10.1.11.10 port 51210 connected to 10.100.11.10 port 5201
+[ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+[  4]   0.00-1.00   sec  37.1 MBytes   311 Mbits/sec   29    168 KBytes
+[  4]   1.00-2.00   sec  36.9 MBytes   310 Mbits/sec   33    168 KBytes
+^C[  4]   2.00-2.79   sec  31.2 MBytes   333 Mbits/sec   18    214 KBytes  
