@@ -160,3 +160,76 @@ referencing a new  CloudFormation YAML file that comprises of the Parameters and
      [  4]   1.00-2.00   sec   119 MBytes   995 Mbits/sec   31    819 KBytes
      [  4]   2.00-3.00   sec   117 MBytes   985 Mbits/sec   24   1019 KBytes
      ```
+4.  VPC-1  Arista vEOS Router config examples are shown below:
+
+     ```
+     hostname Arista-1a
+     !
+     interface Ethernet1
+        mtu 9001
+        no switchport
+        ip address 10.1.1.6/24
+     !
+     interface Ethernet2
+        mtu 9001
+        no switchport
+        ip address 10.1.11.6/24
+     !
+     interface Tunnel1
+        description <Transit>
+        mtu 8973
+        ip address 10.0.0.1/31
+        tunnel source 10.1.1.6
+        tunnel destination 10.100.1.6
+        tunnel key 101
+     !
+     ip route 0.0.0.0/0 Ethernet2 10.1.11.1
+     ip route 10.100.1.0/24 Ethernet1 10.1.1.1
+     !
+     ip routing
+     !
+     router bgp 65101
+        router-id 10.1.1.6
+        neighbor transit-routers peer-group
+        neighbor transit-routers fall-over bfd
+        neighbor transit-routers maximum-routes 12000
+        neighbor 10.0.0.0 peer-group transit-routers
+        neighbor 10.0.0.0 remote-as 65100
+        network 10.1.11.0/24
+     ```
+     
+     ```
+     hostname Arista-1b
+     !
+     interface Ethernet1
+        mtu 9001
+        no switchport
+        ip address 10.1.2.6/24
+     !
+     interface Ethernet2
+        mtu 9001
+        no switchport
+        ip address 10.1.21.6/24
+     !
+     interface Tunnel2
+        description <Transit>
+        mtu 8973
+        ip address 10.0.0.3/31
+        tunnel source 10.1.2.6
+        tunnel destination 10.100.1.6
+        tunnel key 102
+     !
+     ip route 0.0.0.0/0 Ethernet2 10.1.21.1
+     ip route 10.100.1.0/24 Ethernet1 10.1.2.1
+     !
+     ip routing
+     !
+     router bgp 65101
+        router-id 10.1.2.6
+        neighbor transit-routers peer-group
+        neighbor transit-routers fall-over bfd
+        neighbor transit-routers maximum-routes 12000
+        neighbor 10.0.0.2 peer-group transit-routers
+        neighbor 10.0.0.2 remote-as 65100
+        network 10.1.21.0/24
+     ```
