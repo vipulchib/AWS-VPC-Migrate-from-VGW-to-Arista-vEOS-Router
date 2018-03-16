@@ -37,10 +37,14 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
      ```
 
 2.  Transit VPC Arista vEOS Router will be configured with the following EOS config, which includes IPSec and BGP
-     configuration: 
+     configuration.  Prior to generating this config you will need to 'Download Configuration' from the 'VPN Connections' 
+     portion of the VPC Dashboard.  Download this file as the 'Generic' vendor and save the following which will enable 
+     constructing the EOS config: Pre-Shared Key, Outside Virtual Private Gateway IP, Inside IP Address of the Customer 
+     Gateway and the Virtual Private Gateway IP.
 
      ```
      hostname Arista-Transit
+     !
      interface Ethernet1
         mtu 9001
         no switchport
@@ -53,14 +57,31 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
      !
      interface Tunnel10
         mtu 1436
-        ip address 169.254.62.198/30
+        ip address 169.254.60.182/30
         tunnel mode ipsec
         tunnel source 10.100.11.6
-        tunnel destination 52.60.50.92
+        tunnel destination 52.60.137.228
         tunnel mss ceiling 1379
         tunnel ipsec profile AWS-profile1
      !
      router bgp 65100
-        neighbor 169.254.62.197 peer-group edge-routers
-        neighbor 169.254.62.197 remote-as 65102
-     ```
+        neighbor 169.254.60.181 peer-group edge-routers
+        neighbor 169.254.60.181 remote-as 65102
+        ip security
+     !
+     ike policy AWS-IKE1
+        integrity sha1
+        version 1
+        local-id 35.182.194.13
+     !
+     sa policy AWS-SA1
+        esp encryption aes128
+        esp integrity sha1
+        pfs dh-group 14
+     !
+     profile AWS-profile1
+       ike-policy AWS-IKE1
+       sa-policy AWS-SA1
+       connection start
+       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
+       ```
