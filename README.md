@@ -39,17 +39,28 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
 2.  Transit VPC Arista vEOS Router will be configured with the following EOS config, which includes IPSec and BGP
      configuration: 
 
-|Transit VPC vEOS Router Config
-|---
-hostname Arista-Transit
-interface Ethernet1
-   mtu 9001
-   no switchport
-   ip address 10.100.1.6/24
-!
-interface Ethernet2
-   mtu 9001
-   no switchport
-   ip address 10.100.11.6/24
-!
-|---
+     ```
+     hostname Arista-Transit
+     interface Ethernet1
+        mtu 9001
+        no switchport
+        ip address 10.100.1.6/24
+     !
+     interface Ethernet2
+        mtu 9001
+        no switchport
+        ip address 10.100.11.6/24
+     !
+     interface Tunnel10
+        mtu 1436
+        ip address 169.254.62.198/30
+        tunnel mode ipsec
+        tunnel source 10.100.11.6
+        tunnel destination 52.60.50.92
+        tunnel mss ceiling 1379
+        tunnel ipsec profile AWS-profile1
+     !
+     router bgp 65100
+        neighbor 169.254.62.197 peer-group edge-routers
+        neighbor 169.254.62.197 remote-as 65102
+     ```
