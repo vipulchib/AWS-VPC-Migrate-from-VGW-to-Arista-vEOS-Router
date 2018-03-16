@@ -85,7 +85,7 @@ following in order:
        ike-policy AWS-IKE1
        sa-policy AWS-SA1
        connection start
-       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
+       shared-key aNfcMGMqW8FLjtC4mY<THIS_is_the-KEY$  --> Pre-Shared Key
      ```
 3.  We will do a simple connectivity and throughput test between Host-1a in VPC-1 and Host-Transit in the Transit VPC: 
      - Iperf3 Server running on Host-Transit.
