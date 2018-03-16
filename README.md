@@ -38,9 +38,9 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
 
 2.  Transit VPC Arista vEOS Router will be configured with the following EOS config, which includes IPSec and BGP
      configuration: 
-     | Command |
-     | --- |
-     | `git status` |
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
      
 
 ## Building the Cloudformation YAML template.
