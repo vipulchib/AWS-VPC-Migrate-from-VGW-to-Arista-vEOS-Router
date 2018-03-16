@@ -86,16 +86,27 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
        connection start
        shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
      ```
-3.  Creation of VPC-1 using the AWS CLI and a CloudFormation stack using the YAML file that comprises of the Parameters and 
-     the following Resouces: 
-     - VPC.
-     
-     | Host-1a|Host-Transit
-     |---|
-     | [ec2-user@ip-10-1-11-10 ~]$ iperf3 -c 10.100.11.10|
-     Connecting to host 10.100.11.10, port 5201|
-     [  4] local 10.1.11.10 port 51210 connected to 10.100.11.10 port 5201|
-     [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd|
-     [  4]   0.00-1.00   sec  37.1 MBytes   311 Mbits/sec   29    168 KBytes|
-     [  4]   1.00-2.00   sec  36.9 MBytes   310 Mbits/sec   33    168 KBytes|
-     [  4]   2.00-2.79   sec  31.2 MBytes   333 Mbits/sec   18    214 KBytes|
+3.  TBD: 
+     - Iperf3 Client running on Host-1a.
+     ```
+     [ec2-user@ip-10-1-11-10 ~]$ iperf3 -c 10.100.11.10
+     Connecting to host 10.100.11.10, port 5201
+     [  4] local 10.1.11.10 port 51210 connected to 10.100.11.10 port 5201
+     [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
+     [  4]   0.00-1.00   sec  37.1 MBytes   311 Mbits/sec   29    168 KBytes
+     [  4]   1.00-2.00   sec  36.9 MBytes   310 Mbits/sec   33    168 KBytes
+     ^C[  4]   2.00-2.79   sec  31.2 MBytes   333 Mbits/sec   18    214 KBytes
+     ```
+     - Iperf3 Server running on Host-Transit.
+     ```
+     [ec2-user@ip-10-100-11-10 ~]$ iperf3 -s
+     -----------------------------------------------------------
+     Server listening on 5201
+     -----------------------------------------------------------
+     Accepted connection from 10.1.11.10, port 51208
+     [  5] local 10.100.11.10 port 5201 connected to 10.1.11.10 port 51210
+     [ ID] Interval           Transfer     Bandwidth
+     [  5]   0.00-1.00   sec  34.8 MBytes   292 Mbits/sec
+     [  5]   1.00-2.00   sec  37.2 MBytes   312 Mbits/sec
+     [  5]   1.00-2.00   sec  37.2 MBytes   312 Mbits/sec
+     ```  
