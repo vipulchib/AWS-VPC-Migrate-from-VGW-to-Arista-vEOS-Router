@@ -15,7 +15,8 @@ I have broken down every section of the template and provided my thought process
 # Migrating the VPC from VGW to Arista vEOS Router
 I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Router.  In this exercise it is assumed that the Transit VPC is already provisioned with an Arista vEOS Router.  I will demonstrate the following in order:
 
-1.  Creation of VPC-1 using the AWS CLI and a CloudFormation stack using the YAML file that comprises of the Parameters and the following Resouces: 
+1.  Creation of VPC-1 using the AWS CLI and a CloudFormation stack using the YAML file that comprises of the Parameters and 
+     the following Resouces: 
      - VPC.
      - Security Groups.
      - Internet Gateway.
@@ -60,12 +61,12 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
         ip address 169.254.60.182/30
         tunnel mode ipsec
         tunnel source 10.100.11.6
-        tunnel destination 52.60.137.228
+        tunnel destination 52.60.137.228 --> Outside Virtual Private Gateway IP
         tunnel mss ceiling 1379
         tunnel ipsec profile AWS-profile1
      !
      router bgp 65100
-        neighbor 169.254.60.181 peer-group edge-routers
+        neighbor 169.254.60.181 peer-group edge-routers --> Inside IP Address of the Virtual Private Gateway
         neighbor 169.254.60.181 remote-as 65102
         ip security
      !
@@ -83,5 +84,12 @@ I will focus on how to migrate an existing VPC with AWS VGW to Arista vEOS Route
        ike-policy AWS-IKE1
        sa-policy AWS-SA1
        connection start
-       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> **Pre-Shared Key**
+       shared-key aNfcMGMqW8FLjtC4mYs0cgiE1x2sdSk8  --> Pre-Shared Key
      ```
+3.  Creation of VPC-1 using the AWS CLI and a CloudFormation stack using the YAML file that comprises of the Parameters and 
+     the following Resouces: 
+     - VPC.
+     
+     |   |   |
+     |---|---|
+     |   |   |
